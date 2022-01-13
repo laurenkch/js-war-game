@@ -29,31 +29,28 @@
 
 console.log(player1);
 
-// function reset() {
-//         while (this.winPile > 0) {
-//             let index = (Math.floor(Math.random() * this.winPile.length));
-//             let removed = this.winPile.splice(index, 1);
-//             this.deck.push(removed);
-//         };
-//         // shuffledDeck = shuffledDeck.flat();
-//         console.log(this.deck);
-//     }
+function reset() {
+    while (this.winPile.length > 0) {
+        let index = (Math.floor(Math.random() * this.winPile.length));
+        let removed = this.winPile.splice(index, 1);
+        this.deck.push(removed);
+    };
+    this.deck = this.deck.flat();
+};
+
+function draw1() {
+    let activeCard = this.deck.shift();
+    console.log(activeCard);
+    this.winPile.push(activeCard);
+}
 
  function draw(player1) {
         console.log(this.deck.length);
         if (this.deck.length < 2) {
-            while (this.winPile.length > 0) {
-                let index = (Math.floor(Math.random() * this.winPile.length));
-                let removed = this.winPile.splice(index, 1);
-                this.deck.push(removed);
-            };
-            this.deck = this.deck.flat();
-            console.log(this);
+            reset.apply(this);
+            draw1.apply(this);
         } else {
-            let activeCard = this.deck.shift();
-            console.log(this);
-            console.log(activeCard);
-            this.winPile.push(activeCard);
+        draw1.apply(this);
         }
     };
 

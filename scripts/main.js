@@ -6,9 +6,9 @@
     const drawButton = document.querySelector('.draw');
     const newgameButton = document.querySelector('.new-game');
     newgameButton.addEventListener('click', startGame);
-    drawButton.addEventListener('click', drawBothPlayers);
 
-    const currentGame = new Game;
+    let currentGame = new Game;
+    let gameOver = true;
 
     //---GAME CONSTRUCTOR
 
@@ -51,8 +51,8 @@
         for (let i = 2; i < 7; i++) {
             this.cards.push(new Card(i, 'heart'));
             this.cards.push(new Card(i, 'spade'));
-            // this.cards.push(new Card(i, 'diamond'));
-            // this.cards.push(new Card(i, 'club'));
+            this.cards.push(new Card(i, 'diamond'));
+            this.cards.push(new Card(i, 'club'));
         };
     }
 
@@ -136,6 +136,7 @@
         if (this.compare() === 'You win!') {
             if(this.player2.hasmoreCards() === false) {
                 console.log(`!!!!!!You win the game!!!!!!`);
+                gameOver = true;
             } else {
             console.log(`You win!`)
             this.player1.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
@@ -145,6 +146,7 @@
         } else if (this.compare() === 'You lose :(') {
             if(this.player1.hasmoreCards() === false) {
                 console.log(`You lose the game :((((((`)
+                gameOver = true;
             } else {
             console.log(`You lose :(`)
             this.player2.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
@@ -162,10 +164,13 @@
                 this.player2.drawOne();
                 } else if (this.player1.canGoToWar() === false && this.player2.canGoToWar()) {
                     console.log(`You can't go to war. You lose the game :((((((`);
+                    gameOver = true;
                 } else if (this.player2.canGoToWar() === false && this.player1.canGoToWar()) {
                     console.log(`Computer can't go to war. You win the game!!!!!`);
+                    gameOver = true;
                 } else {
                     console.log(`No one can go to war, it's a draw`)
+                    gameOver = true;
                 };
         }
         this.updateOverallResults();
@@ -179,18 +184,22 @@ Game.prototype.updateOverallResults = function () {
 };
 
 function startGame() {
-    // const currentGame = new Game;
+    currentGame = new Game;
     currentGame.deck.makeCards();
     currentGame.deck.shuffle();
     currentGame.dealDeck();
     console.log(`good to go`);
     console.log(currentGame.player1);
     console.log(currentGame.player2);
-    // drawButton.addEventListener('click', this.draw);
+    drawButton.addEventListener('click', drawBothPlayers);
+    gameOver = false;
+    console.log(gameOver);
 };
 
 function drawBothPlayers() {
+    if (gameOver === false) {
     currentGame.draw();
+    };
 };
 
 })();
@@ -225,4 +234,4 @@ function drawBothPlayers() {
 //     } else if (this.player2.totalRemainingCards() < 4) {
 //         console.log(`You win the game!!!!!`);
 
-// but looking back on it, i'm not sure why it worked at all. "this.call" seems to deal out a new card 3 times each but doesn't reference the name of the function draw one. I guess this section of code was nested in the overall function that did deal out one card each for each player, but it didn't run the whole funciton three times because it didn't return the winner and loser of the intermediate cards. Maybe it sort of made a recursive function??
+// but looking back on it, i'm not sure why it worked at all. "this.call" seems to deal out a new card 3 times each but doesn't reference the name of the function draws one. I guess this section of code was nested in the overall function that did deal out one card each for each player, but it didn't run the whole funciton three times because it didn't return the winner and loser of the intermediate cards. Maybe it sort of made a recursive function??

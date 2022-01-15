@@ -1,14 +1,16 @@
 (function () {
     'use strict'
 
-    // let deck = [];
-    // let shuffledDeck = [];
+    //---EVENT LISTENERS
 
     const drawButton = document.querySelector('.draw');
     const newgameButton = document.querySelector('.new-game');
     newgameButton.addEventListener('click', startGame);
     drawButton.addEventListener('click', drawBothPlayers);
-    //---GAME
+
+    const currentGame = new Game;
+
+    //---GAME CONSTRUCTOR
 
     function Game(deck = [], player1, player2) {
         this.deck = new Deck;
@@ -16,14 +18,7 @@
         this.player2 = new Player('computer');
     }
 
-    //---CARDS
-
-    function Card(value, suit) {
-        this.value = value;
-        this.suit = suit;
-    };
-
-    //-PLAYER
+    //----PLAYER CONSTRUCTOR
 
     function Player(name, dealtPile = [], winPile = [], drawnCards = []) {
         this.name = name
@@ -36,30 +31,21 @@
         }
     };
 
-    //SHUFFLES YOUR WIN CARDS WHEN YOU RUN OUT IN YOUR DECK
-
-    Player.prototype.reset = function () {
-        while (this.winPile.length > 0) {
-            let index = (Math.floor(Math.random() * this.winPile.length));
-            let card = this.winPile.splice(index, 1);
-            this.dealtPile.push(card);
-        };
-        this.dealtPile = this.dealtPile.flat();
-    };
-
-    //----DRAWS 1 CARD AND RETURNS IT
-
-    Player.prototype.draw1 = function () {
-        let card = this.dealtPile.shift();
-        this.drawnCards.unshift(card);
-    };
-
-    //----DECK
+    //----DECK CONSTRUCTOR
 
     function Deck(cards, shuffled) {
         this.cards = [];
         this.shuffled = [];
     };
+
+    //---CARD CONSTRUCTOR
+
+    function Card(value, suit) {
+        this.value = value;
+        this.suit = suit;
+    };
+
+    // --------DECK PROTOTYPE FUNCTIONS
 
     Deck.prototype.makeCards = function() {
         for (let i = 2; i < 7; i++) {
@@ -70,13 +56,6 @@
         };
     }
 
-    Game.prototype.dealDeck = function() {
-        this.player1.dealtPile = this.deck.shuffled.slice(0, (this.deck.shuffled.length / 2));
-        this.player2.dealtPile = this.deck.shuffled.slice(this.deck.shuffled.length / 2, this.deck.shuffled.length);
-    };
-
-    //---SHUFFLES THE DECK
-
      Deck.prototype.shuffle = function() {
         while (this.cards.length > 0) {
             let index = (Math.floor(Math.random() * this.cards.length));
@@ -86,28 +65,11 @@
         this.shuffled = this.shuffled.flat();
     };
 
-    // //--DEALS THE DECK
 
-    // function dealDeck(arr) {
-    //     player1.deck = arr.slice(0, (arr.length / 2));
-    //     player2.deck = arr.slice(arr.length / 2, arr.length);
-    // }
-    // dealDeck(shuffledDeck);
+    //-------PLAYER PROTOTYPE FUCTIONS
 
-    const currentGame = new Game;
 
-    function startGame() {
-        // const currentGame = new Game;
-        currentGame.deck.makeCards();
-        currentGame.deck.shuffle();
-        currentGame.dealDeck();
-        console.log(`good to go`);
-        console.log(currentGame.player1);
-        console.log(currentGame.player2);
-        // drawButton.addEventListener('click', this.draw);
-    };
-
-    //-----checks to see if you need to reshuffle the win pile or not and then draws 1 card. 
+    //-----checks to see if you need to reshuffle the win pile or not and then calls draw 1. 
 
     Player.prototype.drawOne = function() {
         if (this.dealtPile.length < 2) {
@@ -116,9 +78,37 @@
             this.draw1.call(this);
         }
 
+    //draw 1
+    Player.prototype.draw1 = function () {
+        let card = this.dealtPile.shift();
+        this.drawnCards.unshift(card);
+    };
+
+    //shuffles your cards from your win pile when you run out. 
+    
+    Player.prototype.reset = function () {
+        while (this.winPile.length > 0) {
+            let index = (Math.floor(Math.random() * this.winPile.length));
+            let card = this.winPile.splice(index, 1);
+            this.dealtPile.push(card);
+        };
+        this.dealtPile = this.dealtPile.flat();
+    };
+
     Player.prototype.hasmoreCards = function() {
-       let results = this.totalRemainingCards() > 0;
-        return results;
+       return this.totalRemainingCards() > 0;
+    };
+
+    
+     Player.prototype.canGoToWar = function() {
+        return this.totalRemainingCards() >= 4
+     };
+
+    //--------GAME PROTOTYPE FUNCTIONS
+
+    Game.prototype.dealDeck = function() {
+        this.player1.dealtPile = this.deck.shuffled.slice(0, (this.deck.shuffled.length / 2));
+        this.player2.dealtPile = this.deck.shuffled.slice(this.deck.shuffled.length / 2, this.deck.shuffled.length);
     };
 
     Game.prototype.readDrawResults = function() {
@@ -135,18 +125,6 @@
          return 'ITS WAR'
         }
      };
-
-     Player.prototype.canGoToWar = function() {
-        return this.totalRemainingCards() >= 4
-     };
-
-     Game.prototype.updateOverallResults = function () {
-        console.log(`player 1 cards in play ${this.player1.drawnCards.length}`);
-        console.log(`player 2 cards in play ${this.player2.drawnCards.length}`);
-        console.log(`Player1 total remaining cards: ${this.player1.totalRemainingCards()}`);
-        console.log(`Player2 total remaining cards: ${this.player2.totalRemainingCards()}`);
-};
-
 
     Game.prototype.draw = function() {
 
@@ -193,11 +171,27 @@
         this.updateOverallResults();
     };
 
+Game.prototype.updateOverallResults = function () {
+    console.log(`player 1 cards in play ${this.player1.drawnCards.length}`);
+    console.log(`player 2 cards in play ${this.player2.drawnCards.length}`);
+    console.log(`Player1 total remaining cards: ${this.player1.totalRemainingCards()}`);
+    console.log(`Player2 total remaining cards: ${this.player2.totalRemainingCards()}`);
+};
+
+function startGame() {
+    // const currentGame = new Game;
+    currentGame.deck.makeCards();
+    currentGame.deck.shuffle();
+    currentGame.dealDeck();
+    console.log(`good to go`);
+    console.log(currentGame.player1);
+    console.log(currentGame.player2);
+    // drawButton.addEventListener('click', this.draw);
+};
 
 function drawBothPlayers() {
     currentGame.draw();
 };
-
 
 })();
 

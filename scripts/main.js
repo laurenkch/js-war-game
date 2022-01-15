@@ -4,10 +4,10 @@
     // let deck = [];
     // let shuffledDeck = [];
 
-
+    const drawButton = document.querySelector('.draw');
     const newgameButton = document.querySelector('.new-game');
     newgameButton.addEventListener('click', startGame);
-
+    drawButton.addEventListener('click', drawBothPlayers);
     //---GAME
 
     function Game(deck = [], player1, player2) {
@@ -25,13 +25,13 @@
 
     //-PLAYER
 
-    function Player(name, hand = [], winPile = [], drawnCards = []) {
+    function Player(name, dealtPile = [], winPile = [], drawnCards = []) {
         this.name = name
-        this.hand = hand
+        this.dealtPile = dealtPile
         this.winPile = winPile
         this.drawnCards = drawnCards
         this.totalRemainingCards = function() {
-            let total = this.hand.length + this.winPile.length
+            let total = this.dealtPile.length + this.winPile.length
             return total;
         }
     };
@@ -45,17 +45,17 @@
         while (this.winPile.length > 0) {
             let index = (Math.floor(Math.random() * this.winPile.length));
             let card = this.winPile.splice(index, 1);
-            this.hand.push(card);
+            this.dealtPile.push(card);
         };
-        this.hand = this.hand.flat();
+        this.dealtPile = this.dealtPile.flat();
     };
 
     //----DRAWS 1 CARD AND RETURNS IT
 
-    function draw1() {
-        let card = this.hand.shift();
+    Player.prototype.draw1 = function () {
+        let card = this.dealtPile.shift();
         this.drawnCards.unshift(card);
-    }
+    };
 
     //----DECK
 
@@ -65,17 +65,17 @@
     };
 
     Deck.prototype.makeCards = function() {
-        for (let i = 2; i < 5; i++) {
+        for (let i = 2; i < 7; i++) {
             this.cards.push(new Card(i, 'heart'));
             this.cards.push(new Card(i, 'spade'));
-            this.cards.push(new Card(i, 'diamond'));
-            this.cards.push(new Card(i, 'club'));
+            // this.cards.push(new Card(i, 'diamond'));
+            // this.cards.push(new Card(i, 'club'));
         };
     }
 
     Game.prototype.dealDeck = function() {
-        this.player1.hand = this.deck.shuffled.slice(0, (this.deck.shuffled.length / 2));
-        this.player2.hand = this.deck.shuffled.slice(this.deck.shuffled.length / 2, this.deck.shuffled.length);
+        this.player1.dealtPile = this.deck.shuffled.slice(0, (this.deck.shuffled.length / 2));
+        this.player2.dealtPile = this.deck.shuffled.slice(this.deck.shuffled.length / 2, this.deck.shuffled.length);
     };
 
     //---SHUFFLES THE DECK
@@ -97,9 +97,6 @@
     // }
     // dealDeck(shuffledDeck);
 
-    const drawButton = document.querySelector('.draw');
-    drawButton.addEventListener('click', draw);
-
     const currentGame = new Game;
 
     function startGame() {
@@ -110,77 +107,83 @@
         console.log(`good to go`);
         console.log(currentGame.player1);
         console.log(currentGame.player2);
+        drawButton.addEventListener('click', this.draw);
     };
 
-    //----LARGER OVERALL DRAW PROCESS
 
-    function drawplayer() {
-        if (this.hand.length < 2) {
+
+    //-----checks to see if you need to reshuffle the win pile or not and then draws 1 card. 
+
+    Player.prototype.drawOne = function() {
+        if (this.dealtPile.length < 2) {
             this.reset.call(this);
         };
-            draw1.call(this);
+            this.draw1.call(this);
         }
 
-    function hasmoreCards() {
+    Player.prototype.hasmoreCards = function() {
        let results = this.totalRemainingCards() > 0;
         console.log(results)
         return results;
     }
 
-    function draw() {
+    Game.prototype.draw = function() {
 
-        //-----checks to see if you need to reshuffle the win pile or not and then draws 1 card. 
-
-        drawplayer.call(currentGame.player1);
-        drawplayer.call(currentGame.player2);
+        this.player1.drawOne();
+        this.player2.drawOne();
 
         //-------tells you want you drew
 
-        console.log(`\nYou drew the ${currentGame.player1.drawnCards[0].value} of ${currentGame.player1.drawnCards[0].suit}s`);
-        console.log(`The computer drew the ${currentGame.player2.drawnCards[0].value} of ${currentGame.player2.drawnCards[0].suit}s`);
+        console.log(`\nYou drew the ${this.player1.drawnCards[0].value} of ${this.player1.drawnCards[0].suit}s`);
+        console.log(`The computer drew the ${this.player2.drawnCards[0].value} of ${this.player2.drawnCards[0].suit}s`);
         
+
         //------compares the values of the drawn cards. 
 
-        if (currentGame.player1.drawnCards[0].value > currentGame.player2.drawnCards[0].value) {
-            if(hasmoreCards.call(currentGame.player2)===false) {
+        if (this.player1.drawnCards[0].value > this.player2.drawnCards[0].value) {
+            if(this.player2.hasmoreCards === false) {
                 console.log(`!!!!!!You win the game!!!!!!`);
             } else {
             console.log(`You win!`)
-            currentGame.player1.winPile.push(...currentGame.player2.drawnCards.concat(currentGame.player1.drawnCards));
-            currentGame.player1.drawnCards = [];
-            currentGame.player2.drawnCards = [];
+            this.player1.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
+            this.player1.drawnCards = [];
+            this.player2.drawnCards = [];
             };
-        } else if (currentGame.player1.drawnCards[0].value < currentGame.player2.drawnCards[0].value) {
-            if(hasmoreCards.call(currentGame.player1)===false) {
+        } else if (this.player1.drawnCards[0].value < this.player2.drawnCards[0].value) {
+            if(this.player1.hasmoreCards === false) {
                 console.log(`You lose the game :((((((`)
             } else {
             console.log(`You lose :(`)
-            currentGame.player2.winPile.push(...currentGame.player2.drawnCards.concat(currentGame.player1.drawnCards));
-            currentGame.player1.drawnCards = [];
-            currentGame.player2.drawnCards = [];  
+            this.player2.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
+            this.player1.drawnCards = [];
+            this.player2.drawnCards = [];  
             };    
-        } else if (currentGame.player1.drawnCards[0].value === currentGame.player1.drawnCards[0].value){
-            if (currentGame.player1.totalRemainingCards() >= 4 && currentGame.player2.totalRemainingCards() >= 4) {
+        } else if (this.player1.drawnCards[0].value === this.player1.drawnCards[0].value){
+            if (this.player1.totalRemainingCards() >= 4 && this.player2.totalRemainingCards() >= 4) {
             console.log('ITS WAR')
-            drawplayer.call(currentGame.player1);
-            drawplayer.call(currentGame.player2);
-            drawplayer.call(currentGame.player1);
-            drawplayer.call(currentGame.player2);
-            drawplayer.call(currentGame.player1);
-            drawplayer.call(currentGame.player2);
-            } else if (currentGame.player1.totalRemainingCards() < 4) {
+            this.call(currentGame.player1);
+            this.call(currentGame.player2);
+            this.call(currentGame.player1);
+            this.call(currentGame.player2);
+            this.call(currentGame.player1);
+            this.call(currentGame.player2);
+            } else if (this.player1.totalRemainingCards() < 4) {
                 console.log(`You lose the game :((((((`);
-            } else if (currentGame.player2.totalRemainingCards() < 4) {
+            } else if (this.player2.totalRemainingCards() < 4) {
                 console.log(`You win the game!!!!!`);
         };
     };
         //logs the totals for both players
 
-        console.log(`Player1 total remaining cards: ${currentGame.player1.totalRemainingCards()}`);
-        console.log(`Player2 total remaining cards: ${currentGame.player2.totalRemainingCards()}`);
+        console.log(`player 1 cards in play ${this.player1.drawnCards.length}`);
+        console.log(`player 2 cards in play ${this.player2.drawnCards.length}`);
+        console.log(`Player1 total remaining cards: ${this.player1.totalRemainingCards()}`);
+        console.log(`Player2 total remaining cards: ${this.player2.totalRemainingCards()}`);
 };
 
-
+function drawBothPlayers() {
+    currentGame.draw();
+};
 
 
 

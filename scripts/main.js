@@ -172,16 +172,16 @@
         this.player1.drawOne();
         this.player2.drawOne();
 
-        this.updateDrawResults();
-
         if (this.compare() === 'You win!') {
+            this.updateDrawResults();
             this.player1WinsTheHand();
             if(this.player2.hasmoreCards() === false) {
-                resultsDisplay.textContent =`!!!!!!You win the game!!!!!!`;
+                resultsDisplay.textContent =`You win the game!!!!!!`;
                 gameOver = true;
             } else {resultsDisplay.textContent =`You win!`;
             };
         } else if (this.compare() === 'You lose :(') {
+            this.updateDrawResults();
             this.player2WinsTheHand();
             if(this.player1.hasmoreCards() === false) {
                 resultsDisplay.textContent =`You lose the game :((((((`
@@ -190,26 +190,29 @@
             resultsDisplay.textContent =`You lose :(`;
             };
         } else {
+            //add results/cards if double war, 
             if (this.player1.canGoToWar() && this.player2.canGoToWar()) {
-                resultsDisplay.textContent = 'ITS WAR';
-                
+                if(resultsDisplay.textContent === 'ITS WAR'){
+                youDrawDisplay.textContent += `You drew:\n\n${this.player1.readDrawResults()}`;
+                compDrawsDisplay.textContent += `The computer drew:\n\n${this.player2.readDrawResults()}`;
+                } else {this.updateDrawResults(); 
+                    resultsDisplay.textContent = 'ITS WAR';    
+                };
+
+                youDrawDisplay.textContent += `\n                            You place 3 cards facedown\n`
+                compDrawsDisplay.textContent +=`\n                            The computer places 3 cards facedown\n`
+
                 //pull one
                 this.player1.drawOne();
-                youDrawDisplay.textContent += `\n\ncard`
                 this.player2.drawOne();
-                compDrawsDisplay.textContent += `\n\ncard`
                 
                 //pull two
                 this.player1.drawOne();
-                youDrawDisplay.textContent += `\n\ncard`;
                 this.player2.drawOne();
-                compDrawsDisplay.textContent += `\n\ncard`;
                 
                 //pull three
                 this.player1.drawOne();
-                youDrawDisplay.textContent += `\n\ncard`;
                 this.player2.drawOne();
-                compDrawsDisplay.textContent += `\n\ncard`;
 
                 } else if (this.player1.canGoToWar() === false && this.player2.canGoToWar()) {
                     resultsDisplay.textContent =`You can't go to war. You lose the game :((((((`;

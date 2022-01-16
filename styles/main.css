@@ -3,14 +3,13 @@
 }
 .left {
     display: flex;
-    flex: 2;
+    flex: 200px;
     flex-direction: column;
     margin-left: 100px;
     margin-right: 30px;
     margin-top: 30px;
     margin-bottom: 20px; 
     width: 100vh;
-    /* height: 100vh; */
 }
 .current-hand {
     padding-top: 10px;
@@ -30,25 +29,23 @@
     margin-right: 10px;
 }
 .comp-current-hand, .your-current-hand {
-    flex: 1;
+    flex: 100px;
     margin-top: 5px;
     margin-bottom: 5px;
     padding: 10px;
     white-space: pre;
-    flex-wrap: nowrap;
 }
 .results {
     margin-top: 10px;
     margin-left: 10px;
     margin-right: 10px;
     padding-left: 20px;
-    /* border: 1px solid black; */
     text-align: center;
 }
 .right {
     display: flex;
     flex-direction: column;
-    height: 64vh;
+    height: 67vh;
     margin-top: 30px;
     margin-bottom: 20px;
     margin-right: 100px;

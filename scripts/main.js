@@ -54,7 +54,7 @@
     // --------DECK PROTOTYPE FUNCTIONS
 
     Deck.prototype.makeCards = function() {
-        for (let i = 2; i < 7; i++) {
+        for (let i = 2; i < 15; i++) {
             this.cards.push(new Card(i, 'heart'));
             this.cards.push(new Card(i, 'spade'));
             this.cards.push(new Card(i, 'diamond'));
@@ -119,6 +119,7 @@
 
     Game.prototype.readDrawResults = function() {
         youDrawDisplay.textContent = (`\nYou drew the ${this.player1.drawnCards[0].value} of ${this.player1.drawnCards[0].suit}s`);
+        
         compDrawsDisplay.textContent = (`The computer drew the ${this.player2.drawnCards[0].value} of ${this.player2.drawnCards[0].suit}s`);
     };
 
@@ -194,12 +195,8 @@ function startGame() {
     currentGame.deck.makeCards();
     currentGame.deck.shuffle();
     currentGame.dealDeck();
-    // console.log(`good to go`);
-    // console.log(currentGame.player1);
-    // console.log(currentGame.player2);
     drawButton.addEventListener('click', drawBothPlayers);
     gameOver = false;
-    // console.log(gameOver);
 };
 
 function drawBothPlayers() {

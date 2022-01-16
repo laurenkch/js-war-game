@@ -118,9 +118,9 @@
     };
 
     Game.prototype.readDrawResults = function() {
-        youDrawDisplay.textContent = (`\nYou drew the ${this.player1.drawnCards[0].value} of ${this.player1.drawnCards[0].suit}s`);
-        
-        compDrawsDisplay.textContent = (`The computer drew the ${this.player2.drawnCards[0].value} of ${this.player2.drawnCards[0].suit}s`);
+        youDrawDisplay.textContent = (`You drew:\n\n\n${this.player1.drawnCards[0].value} of ${this.player1.drawnCards[0].suit}s`);
+
+        compDrawsDisplay.textContent = (`The computer drew:\n\n\n ${this.player2.drawnCards[0].value} of ${this.player2.drawnCards[0].suit}s`);
     };
 
     Game.prototype.compare = function() {
@@ -186,8 +186,8 @@
     };
 
 Game.prototype.updateOverallResults = function () {
-    yourTotalsDisplay.textContent = `You have ${this.player1.totalRemainingCards()} remaining card.`;
-    compTotalsDisplay.textContent = `The computer has ${this.player2.totalRemainingCards()} remaining cards.`;
+    yourTotalsDisplay.textContent = `Your total cards:\n\n${this.player1.totalRemainingCards() + this.player1.drawnCards.length}`;
+    compTotalsDisplay.textContent = `The computer's total cards:\n\n${this.player2.totalRemainingCards() + this.player2.drawnCards.length}`;
 };
 
 function startGame() {
@@ -208,33 +208,3 @@ function drawBothPlayers() {
 })();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// at some point I had code like this that seemed to work but I wanted to save it for a question:
-
-// } else if (this.player1.drawnCards[0].value === this.player1.drawnCards[0].value){
-//     if (this.player1.totalRemainingCards() >= 4 && this.player2.totalRemainingCards() >= 4) {
-//     console.log('ITS WAR')
-//     this.call(currentGame.player1);
-//     this.call(currentGame.player2);
-//     this.call(currentGame.player1);
-//     this.call(currentGame.player2);
-//     this.call(currentGame.player1);
-//     this.call(currentGame.player2);
-//     } else if (this.player1.totalRemainingCards() < 4) {
-//         console.log(`You lose the game :((((((`);
-//     } else if (this.player2.totalRemainingCards() < 4) {
-//         console.log(`You win the game!!!!!`);
-
-// but looking back on it, i'm not sure why it worked at all. "this.call" seems to deal out a new card 3 times each but doesn't reference the name of the function draws one. I guess this section of code was nested in the overall function that did deal out one card each for each player, but it didn't run the whole funciton three times because it didn't return the winner and loser of the intermediate cards. Maybe it sort of made a recursive function??

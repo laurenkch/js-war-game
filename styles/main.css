@@ -6,9 +6,9 @@
     padding-bottom: 10px;
     padding-left: 10px;
     padding-right: 10px;
-    border: solid;
+    /* border: solid;
     border-width: 1px;
-    border-color:black;
+    border-color:black; */
     margin-left: 100px;
     margin-right: 50px;
     margin-top: 30px;
@@ -26,13 +26,18 @@
     border-width: 1px;
     margin-top: 5px;
     margin-bottom: 5px;
+    padding: 10px;
+    white-space: pre;
+}
+.results {
+    margin-top: 10px;
 }
 .score {
     display: flex;
     flex-direction: column;
-    border: solid;
-    border-width: 1px;
-    height: 63vh;
+    /* border: solid;
+    border-width: 1px; */
+    height: 64vh;
     margin-top: 30px;
     margin-bottom: 20px;
     margin-right: 100px;
@@ -55,19 +60,20 @@
     flex-direction: column;
 }
 .your-totals, .comp-totals {
-    border: solid;
-    border-width: 1px;
+    /* border: solid;
+    border-width: 1px; */
     padding: 10px;
     margin: 10px;
     /* margin-top: 10px;
     margin-bottom: 10px; */
     flex: 1;
+    white-space: pre;
 }
 .buttons {
     display: flex;
     justify-content: center;
-    border: solid;
-    border-width: 1px;
+    /* border: solid;
+    border-width: 1px; */
     padding-top: 5px;
     padding-bottom: 5px;
 }

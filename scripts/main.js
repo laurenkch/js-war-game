@@ -56,7 +56,7 @@
     // --------DECK PROTOTYPE FUNCTIONS
 
     Deck.prototype.makeCards = function() {
-        for (let i = 2; i < 10; i++) {
+        for (let i = 2; i < 15; i++) {
             this.cards.push(new Card(i, 'heart'));
             this.cards.push(new Card(i, 'spade'));
             this.cards.push(new Card(i, 'diamond'));

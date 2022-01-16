@@ -16,6 +16,7 @@
     let currentGame = new Game;
     let gameOver = true;
 
+
     //---GAME CONSTRUCTOR
 
     function Game(deck = [], player1, player2) {
@@ -117,10 +118,31 @@
         this.player2.dealtPile = this.deck.shuffled.slice(this.deck.shuffled.length / 2, this.deck.shuffled.length);
     };
 
-    Game.prototype.readDrawResults = function() {
-        youDrawDisplay.textContent = (`You drew:\n\n\n${this.player1.drawnCards[0].value} of ${this.player1.drawnCards[0].suit}s`);
+    Player.prototype.readDrawResults = function() {
+        let readout = "";
+        switch (this.drawnCards[0].value) {
+            case 11: 
+            readout = `You drew:\n\n\nJack of ${this.drawnCards[0].suit}s`;
+            break;
+            case 12:
+            readout = `You drew:\n\n\nQueen of ${this.drawnCards[0].suit}s`;
+            break;
+            case 13: 
+            readout = `You drew:\n\n\nKing of ${this.drawnCards[0].suit}s`;
+            break;
+            case 14: 
+            readout = `You drew:\n\n\nAce of ${this.drawnCards[0].suit}s`;
+            break;
+            default:
+            readout = `You drew:\n\n\n${this.drawnCards[0].value} of ${this.drawnCards[0].suit}s`
+        }
+        console.log(readout);
+        return readout
+    };
 
-        compDrawsDisplay.textContent = (`The computer drew:\n\n\n ${this.player2.drawnCards[0].value} of ${this.player2.drawnCards[0].suit}s`);
+    Game.prototype.updateDrawResults = function () {
+        youDrawDisplay.textContent = this.player1.readDrawResults();
+        compDrawsDisplay.textContent = this.player2.readDrawResults();
     };
 
     Game.prototype.compare = function() {
@@ -138,7 +160,7 @@
         this.player1.drawOne();
         this.player2.drawOne();
 
-        this.readDrawResults();
+        this.updateDrawResults();
 
         if (this.compare() === 'You win!') {
             if(this.player2.hasmoreCards() === false) {

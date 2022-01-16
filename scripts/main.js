@@ -12,6 +12,7 @@
     const drawButton = document.querySelector('.draw');
     const newgameButton = document.querySelector('.new-game');
     newgameButton.addEventListener('click', startGame);
+    drawButton.addEventListener('click', drawBothPlayers);
 
     let currentGame = new Game;
     let gameOver = true;
@@ -55,7 +56,7 @@
     // --------DECK PROTOTYPE FUNCTIONS
 
     Deck.prototype.makeCards = function() {
-        for (let i = 2; i < 15; i++) {
+        for (let i = 2; i < 10; i++) {
             this.cards.push(new Card(i, 'heart'));
             this.cards.push(new Card(i, 'spade'));
             this.cards.push(new Card(i, 'diamond'));
@@ -111,6 +112,27 @@
         return this.totalRemainingCards() >= 4
      };
 
+     Player.prototype.readDrawResults = function() {
+        let readout = "";
+        switch (this.drawnCards[0].value) {
+            case 11: 
+            readout = `Jack of ${this.drawnCards[0].suit}s`;
+            break;
+            case 12:
+            readout = `Queen of ${this.drawnCards[0].suit}s`;
+            break;
+            case 13: 
+            readout = `King of ${this.drawnCards[0].suit}s`;
+            break;
+            case 14: 
+            readout = `Ace of ${this.drawnCards[0].suit}s`;
+            break;
+            default:
+            readout = `${this.drawnCards[0].value} of ${this.drawnCards[0].suit}s`
+        }
+        return readout
+    };
+
     //--------GAME PROTOTYPE FUNCTIONS
 
     Game.prototype.dealDeck = function() {
@@ -118,31 +140,9 @@
         this.player2.dealtPile = this.deck.shuffled.slice(this.deck.shuffled.length / 2, this.deck.shuffled.length);
     };
 
-    Player.prototype.readDrawResults = function() {
-        let readout = "";
-        switch (this.drawnCards[0].value) {
-            case 11: 
-            readout = `You drew:\n\n\nJack of ${this.drawnCards[0].suit}s`;
-            break;
-            case 12:
-            readout = `You drew:\n\n\nQueen of ${this.drawnCards[0].suit}s`;
-            break;
-            case 13: 
-            readout = `You drew:\n\n\nKing of ${this.drawnCards[0].suit}s`;
-            break;
-            case 14: 
-            readout = `You drew:\n\n\nAce of ${this.drawnCards[0].suit}s`;
-            break;
-            default:
-            readout = `You drew:\n\n\n${this.drawnCards[0].value} of ${this.drawnCards[0].suit}s`
-        }
-        console.log(readout);
-        return readout
-    };
-
     Game.prototype.updateDrawResults = function () {
-        youDrawDisplay.textContent = this.player1.readDrawResults();
-        compDrawsDisplay.textContent = this.player2.readDrawResults();
+        youDrawDisplay.textContent = `You drew:\n\n${this.player1.readDrawResults()}`;
+        compDrawsDisplay.textContent = `The computer drew:\n\n${this.player2.readDrawResults()}`;
     };
 
     Game.prototype.compare = function() {
@@ -155,6 +155,18 @@
         }
      };
 
+     Game.prototype.player1WinsTheHand = function() {
+        this.player1.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
+        this.player1.drawnCards = [];
+        this.player2.drawnCards = [];
+     };
+
+     Game.prototype.player2WinsTheHand = function() {
+        this.player2.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
+        this.player1.drawnCards = [];
+        this.player2.drawnCards = [];
+     }
+
     Game.prototype.draw = function() {
 
         this.player1.drawOne();
@@ -163,36 +175,42 @@
         this.updateDrawResults();
 
         if (this.compare() === 'You win!') {
+            this.player1WinsTheHand();
             if(this.player2.hasmoreCards() === false) {
-                youDrawDisplay.textContent =`!!!!!!You win the game!!!!!!`;
-                compDrawsDisplay.textContent = ''
+                resultsDisplay.textContent =`!!!!!!You win the game!!!!!!`;
                 gameOver = true;
-            } else {
-            resultsDisplay.textContent =`You win!`;
-            this.player1.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
-            this.player1.drawnCards = [];
-            this.player2.drawnCards = [];
+            } else {resultsDisplay.textContent =`You win!`;
             };
         } else if (this.compare() === 'You lose :(') {
+            this.player2WinsTheHand();
             if(this.player1.hasmoreCards() === false) {
-                youDrawDisplay.textContent =`You lose the game :((((((`
-                compDrawsDisplay.textContent = ''
+                resultsDisplay.textContent =`You lose the game :((((((`
                 gameOver = true;
             } else {
             resultsDisplay.textContent =`You lose :(`;
-            this.player2.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
-            this.player1.drawnCards = [];
-            this.player2.drawnCards = [];
             };
         } else {
             if (this.player1.canGoToWar() && this.player2.canGoToWar()) {
                 resultsDisplay.textContent = 'ITS WAR';
+                
+                //pull one
                 this.player1.drawOne();
+                youDrawDisplay.textContent += `\n\ncard`
                 this.player2.drawOne();
+                compDrawsDisplay.textContent += `\n\ncard`
+                
+                //pull two
                 this.player1.drawOne();
+                youDrawDisplay.textContent += `\n\ncard`;
                 this.player2.drawOne();
+                compDrawsDisplay.textContent += `\n\ncard`;
+                
+                //pull three
                 this.player1.drawOne();
+                youDrawDisplay.textContent += `\n\ncard`;
                 this.player2.drawOne();
+                compDrawsDisplay.textContent += `\n\ncard`;
+
                 } else if (this.player1.canGoToWar() === false && this.player2.canGoToWar()) {
                     resultsDisplay.textContent =`You can't go to war. You lose the game :((((((`;
                     gameOver = true;
@@ -217,8 +235,11 @@ function startGame() {
     currentGame.deck.makeCards();
     currentGame.deck.shuffle();
     currentGame.dealDeck();
-    drawButton.addEventListener('click', drawBothPlayers);
     gameOver = false;
+    currentGame.updateOverallResults();
+    compDrawsDisplay.textContent = `The computer drew:`;
+    youDrawDisplay.textContent = `You drew:`;
+    resultsDisplay.textContent = 'Click draw to play your hand!';
 };
 
 function drawBothPlayers() {

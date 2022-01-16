@@ -1,7 +1,12 @@
 (function () {
     'use strict'
 
-    //---EVENT LISTENERS
+    //---CONSTANTS, VARIABLES, AND EVENT LISTENERS
+
+    const youDrawDisplay = document.querySelector('.your-current-hand');
+    const compDrawsDisplay = document.querySelector('.comp-current-hand');
+    const yourTotalsDisplay = document.querySelector('.your-totals');
+    const compTotalsDisplay = document.querySelector('.comp-totals');
 
     const drawButton = document.querySelector('.draw');
     const newgameButton = document.querySelector('.new-game');
@@ -112,8 +117,8 @@
     };
 
     Game.prototype.readDrawResults = function() {
-        console.log(`\nYou drew the ${this.player1.drawnCards[0].value} of ${this.player1.drawnCards[0].suit}s`);
-        console.log(`The computer drew the ${this.player2.drawnCards[0].value} of ${this.player2.drawnCards[0].suit}s`);
+        youDrawDisplay.textContent = (`\nYou drew the ${this.player1.drawnCards[0].value} of ${this.player1.drawnCards[0].suit}s`);
+        compDrawsDisplay.textContent = (`The computer drew the ${this.player2.drawnCards[0].value} of ${this.player2.drawnCards[0].suit}s`);
     };
 
     Game.prototype.compare = function() {
@@ -135,7 +140,8 @@
 
         if (this.compare() === 'You win!') {
             if(this.player2.hasmoreCards() === false) {
-                console.log(`!!!!!!You win the game!!!!!!`);
+                youDrawDisplay.textContent =`!!!!!!You win the game!!!!!!`;
+                compDrawsDisplay.textContent = ''
                 gameOver = true;
             } else {
             console.log(`You win!`)
@@ -145,7 +151,8 @@
             };
         } else if (this.compare() === 'You lose :(') {
             if(this.player1.hasmoreCards() === false) {
-                console.log(`You lose the game :((((((`)
+                youDrawDisplay.textContent =`You lose the game :((((((`
+                compDrawsDisplay.textContent = ''
                 gameOver = true;
             } else {
             console.log(`You lose :(`)
@@ -177,10 +184,8 @@
     };
 
 Game.prototype.updateOverallResults = function () {
-    console.log(`player 1 cards in play ${this.player1.drawnCards.length}`);
-    console.log(`player 2 cards in play ${this.player2.drawnCards.length}`);
-    console.log(`Player1 total remaining cards: ${this.player1.totalRemainingCards()}`);
-    console.log(`Player2 total remaining cards: ${this.player2.totalRemainingCards()}`);
+    yourTotalsDisplay.textContent = `You have ${this.player1.totalRemainingCards()} remaining card.`;
+    compTotalsDisplay.textContent = `The computer has ${this.player2.totalRemainingCards()} remaining cards.`;
 };
 
 function startGame() {
@@ -188,12 +193,12 @@ function startGame() {
     currentGame.deck.makeCards();
     currentGame.deck.shuffle();
     currentGame.dealDeck();
-    console.log(`good to go`);
-    console.log(currentGame.player1);
-    console.log(currentGame.player2);
+    // console.log(`good to go`);
+    // console.log(currentGame.player1);
+    // console.log(currentGame.player2);
     drawButton.addEventListener('click', drawBothPlayers);
     gameOver = false;
-    console.log(gameOver);
+    // console.log(gameOver);
 };
 
 function drawBothPlayers() {

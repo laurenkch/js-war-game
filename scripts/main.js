@@ -7,6 +7,7 @@
     const compDrawsDisplay = document.querySelector('.comp-current-hand');
     const yourTotalsDisplay = document.querySelector('.your-totals');
     const compTotalsDisplay = document.querySelector('.comp-totals');
+    const resultsDisplay = document.querySelector('.results');
 
     const drawButton = document.querySelector('.draw');
     const newgameButton = document.querySelector('.new-game');
@@ -144,7 +145,7 @@
                 compDrawsDisplay.textContent = ''
                 gameOver = true;
             } else {
-            console.log(`You win!`)
+            resultsDisplay.textContent =`You win!`;
             this.player1.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
             this.player1.drawnCards = [];
             this.player2.drawnCards = [];
@@ -155,14 +156,14 @@
                 compDrawsDisplay.textContent = ''
                 gameOver = true;
             } else {
-            console.log(`You lose :(`)
+            resultsDisplay.textContent =`You lose :(`;
             this.player2.winPile.push(...this.player2.drawnCards.concat(this.player1.drawnCards));
             this.player1.drawnCards = [];
             this.player2.drawnCards = [];
             };
         } else {
             if (this.player1.canGoToWar() && this.player2.canGoToWar()) {
-                console.log('ITS WAR')
+                resultsDisplay.textContent = 'ITS WAR';
                 this.player1.drawOne();
                 this.player2.drawOne();
                 this.player1.drawOne();
@@ -170,13 +171,13 @@
                 this.player1.drawOne();
                 this.player2.drawOne();
                 } else if (this.player1.canGoToWar() === false && this.player2.canGoToWar()) {
-                    console.log(`You can't go to war. You lose the game :((((((`);
+                    resultsDisplay.textContent =`You can't go to war. You lose the game :((((((`;
                     gameOver = true;
                 } else if (this.player2.canGoToWar() === false && this.player1.canGoToWar()) {
-                    console.log(`Computer can't go to war. You win the game!!!!!`);
+                    resultsDisplay.textContent =`Computer can't go to war. You win the game!!!!!`;
                     gameOver = true;
                 } else {
-                    console.log(`No one can go to war, it's a draw`)
+                    resultsDisplay.textContent =`No one can go to war, it's a draw`;
                     gameOver = true;
                 };
         }

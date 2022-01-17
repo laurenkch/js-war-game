@@ -56,7 +56,7 @@
     // --------DECK PROTOTYPE FUNCTIONS
 
     Deck.prototype.makeCards = function() {
-        for (let i = 2; i < 15; i++) {
+        for (let i = 2; i < 8; i++) {
             this.cards.push(new Card(i, 'heart'));
             this.cards.push(new Card(i, 'spade'));
             this.cards.push(new Card(i, 'diamond'));
@@ -151,7 +151,7 @@
         } else if (this.player1.drawnCards[0].value < this.player2.drawnCards[0].value) {
          return `You lose :(`
         } else {
-         return 'ITS WAR'
+         return `IT'S WAR`
         }
      };
 
@@ -176,7 +176,7 @@
             this.updateDrawResults();
             this.player1WinsTheHand();
             if(this.player2.hasmoreCards() === false) {
-                resultsDisplay.textContent =`You win the game!!!!!!`;
+                resultsDisplay.textContent =`You won the game!!!!!!`;
                 gameOver = true;
             } else {resultsDisplay.textContent =`You win!`;
             };
@@ -184,50 +184,69 @@
             this.updateDrawResults();
             this.player2WinsTheHand();
             if(this.player1.hasmoreCards() === false) {
-                resultsDisplay.textContent =`You lose the game :((((((`
+                resultsDisplay.textContent =`You lost the game :((((((`
                 gameOver = true;
             } else {
             resultsDisplay.textContent =`You lose :(`;
             };
         } else { 
             this.displayWarCards();
-            if(this.player2.hasmoreCards() === false) {
-                resultsDisplay.textContent =`The computer can't go to war.You win the game!!!!!!`;
-                gameOver = true;
-            }
-            if(this.player1.hasmoreCards() === false) {
-                resultsDisplay.textContent =`You can't go to war. You lose the game :((((((`
-                gameOver = true; 
-            }
-        }
+        };
+        //     if(this.player2.hasmoreCards() === false) {
+        //         resultsDisplay.textContent =`The computer can't go to war.You won the game!!!!!!`;
+        //         gameOver = true;
+        //     }
+        //     if(this.player1.hasmoreCards() === false) {
+        //         resultsDisplay.textContent =`You can't go to war. You lost the game :((((((`
+        //         gameOver = true; 
+        //     }
+        // }
         this.updateOverallResults();
     };
 
+    Game.prototype.checkForWarWinner = function() {
+        if(this.player2.hasmoreCards() === false) {
+            resultsDisplay.textContent =`The computer can't go to war. You won the game!!!!!!`;
+            gameOver = true;
+        }
+        if(this.player1.hasmoreCards() === false) {
+            resultsDisplay.textContent =`You can't go to war. You lost the game :((((((`
+            gameOver = true; 
+        }
+    }
+
     Game.prototype.displayWarCards = function() {
+        this.checkForWarWinner();
         if(resultsDisplay.textContent === 'ITS WAR'){
             youDrawDisplay.textContent += `\n\n${this.player1.readDrawResults()}`;
             compDrawsDisplay.textContent += `\n\n${this.player2.readDrawResults()}`;
             } else {this.updateDrawResults(); 
-                resultsDisplay.textContent = 'ITS WAR';    
+                resultsDisplay.textContent = `IT'S WAR`;    
             }
 
+            this.checkForWarWinner();
             //pull one
             this.player1.drawOne();
             youDrawDisplay.textContent += `\n\n       You place facedown:  ${this.player1.readDrawResults()}`;
             this.player2.drawOne();
             compDrawsDisplay.textContent += `\n\n       The computer places facedown:  ${this.player2.readDrawResults()}`;
             
+            this.checkForWarWinner();
             //pull two
             this.player1.drawOne();
             youDrawDisplay.textContent += `,  ${this.player1.readDrawResults()}`;
             this.player2.drawOne();
             compDrawsDisplay.textContent += `,  ${this.player2.readDrawResults()}`;
             
+            this.checkForWarWinner();
             //pull three
             this.player1.drawOne();
             youDrawDisplay.textContent += `,  ${this.player1.readDrawResults()}`;
             this.player2.drawOne();
             compDrawsDisplay.textContent += `,  ${this.player2.readDrawResults()}`;
+            console.log(this.player1);
+            console.log(this.player2)
+            this.checkForWarWinner();
     };
 
 

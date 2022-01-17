@@ -82,11 +82,11 @@
     Player.prototype.drawOne = function() {
         if (this.dealtPile.length < 2) {
             this.reset.call(this);
+        } 
+        this.draw1();
         };
-            this.draw1.call(this);
-        }
 
-    //draw 1
+    // draw 1
     Player.prototype.draw1 = function () {
         let card = this.dealtPile.shift();
         this.drawnCards.unshift(card);
@@ -189,67 +189,70 @@
             } else {
             resultsDisplay.textContent =`You lose :(`;
             };
-        } else {
-            //add results/cards if double war, 
-            if (this.player1.canGoToWar() && this.player2.canGoToWar()) {
-                if(resultsDisplay.textContent === 'ITS WAR'){
-                youDrawDisplay.textContent += `You drew:\n\n${this.player1.readDrawResults()}`;
-                compDrawsDisplay.textContent += `The computer drew:\n\n${this.player2.readDrawResults()}`;
-                } else {this.updateDrawResults(); 
-                    resultsDisplay.textContent = 'ITS WAR';    
-                };
-
-                youDrawDisplay.textContent += `\n                            You place 3 cards facedown\n`
-                compDrawsDisplay.textContent +=`\n                            The computer places 3 cards facedown\n`
-
-                //pull one
-                this.player1.drawOne();
-                this.player2.drawOne();
-                
-                //pull two
-                this.player1.drawOne();
-                this.player2.drawOne();
-                
-                //pull three
-                this.player1.drawOne();
-                this.player2.drawOne();
-
-                } else if (this.player1.canGoToWar() === false && this.player2.canGoToWar()) {
-                    resultsDisplay.textContent =`You can't go to war. You lose the game :((((((`;
-                    gameOver = true;
-                } else if (this.player2.canGoToWar() === false && this.player1.canGoToWar()) {
-                    resultsDisplay.textContent =`Computer can't go to war. You win the game!!!!!`;
-                    gameOver = true;
-                } else {
-                    resultsDisplay.textContent =`No one can go to war, it's a draw`;
-                    gameOver = true;
-                };
+        } else { 
+            this.displayWarCards();
+            if(this.player2.hasmoreCards() === false) {
+                resultsDisplay.textContent =`The computer can't go to war.You win the game!!!!!!`;
+                gameOver = true;
+            }
+            if(this.player1.hasmoreCards() === false) {
+                resultsDisplay.textContent =`You can't go to war. You lose the game :((((((`
+                gameOver = true; 
+            }
         }
         this.updateOverallResults();
     };
 
-Game.prototype.updateOverallResults = function () {
-    yourTotalsDisplay.textContent = `Your total cards:\n\n${this.player1.totalRemainingCards() + this.player1.drawnCards.length}`;
-    compTotalsDisplay.textContent = `The computer's total cards:\n\n${this.player2.totalRemainingCards() + this.player2.drawnCards.length}`;
-};
+    Game.prototype.displayWarCards = function() {
+        if(resultsDisplay.textContent === 'ITS WAR'){
+            youDrawDisplay.textContent += `\n\n${this.player1.readDrawResults()}`;
+            compDrawsDisplay.textContent += `\n\n${this.player2.readDrawResults()}`;
+            } else {this.updateDrawResults(); 
+                resultsDisplay.textContent = 'ITS WAR';    
+            }
 
-function startGame() {
-    currentGame = new Game;
-    currentGame.deck.makeCards();
-    currentGame.deck.shuffle();
-    currentGame.dealDeck();
-    gameOver = false;
-    currentGame.updateOverallResults();
-    compDrawsDisplay.textContent = `The computer drew:`;
-    youDrawDisplay.textContent = `You drew:`;
-    resultsDisplay.textContent = 'Click draw to play your hand!';
-};
-
-function drawBothPlayers() {
-    if (gameOver === false) {
-    currentGame.draw();
+            //pull one
+            this.player1.drawOne();
+            youDrawDisplay.textContent += `\n\n       You place facedown:  ${this.player1.readDrawResults()}`;
+            this.player2.drawOne();
+            compDrawsDisplay.textContent += `\n\n       The computer places facedown:  ${this.player2.readDrawResults()}`;
+            
+            //pull two
+            this.player1.drawOne();
+            youDrawDisplay.textContent += `,  ${this.player1.readDrawResults()}`;
+            this.player2.drawOne();
+            compDrawsDisplay.textContent += `,  ${this.player2.readDrawResults()}`;
+            
+            //pull three
+            this.player1.drawOne();
+            youDrawDisplay.textContent += `,  ${this.player1.readDrawResults()}`;
+            this.player2.drawOne();
+            compDrawsDisplay.textContent += `,  ${this.player2.readDrawResults()}`;
     };
-};
+
+
+    Game.prototype.updateOverallResults = function () {
+        yourTotalsDisplay.textContent = `Your remaining cards:\n\n${this.player1.totalRemainingCards()}`;
+        compTotalsDisplay.textContent = `The computer's remaining cards:\n\n${this.player2.totalRemainingCards()}`;
+    };
+
+    function startGame() {
+        currentGame = new Game;
+        currentGame.deck.makeCards();
+        currentGame.deck.shuffle();
+        currentGame.dealDeck();
+        gameOver = false;
+        currentGame.updateOverallResults();
+        compDrawsDisplay.textContent = `The computer drew:`;
+        youDrawDisplay.textContent = `You drew:`;
+        resultsDisplay.textContent = 'Click draw to play your hand!';
+    };
+
+    function drawBothPlayers() {
+        if (gameOver === false) {
+        currentGame.draw();
+        };
+    };
 
 })();
 

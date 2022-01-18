@@ -1,3 +1,7 @@
+import {Deck} from "./deck.js";
+import {Card} from "./card.js";
+console.log(Deck);
+
 (function () {
     'use strict'
 
@@ -41,28 +45,28 @@
 
     //----DECK CONSTRUCTOR
 
-    function Deck(cards, shuffled) {
-        this.cards = [];
-        this.shuffled = [];
-    };
+    // function Deck(cards, shuffled) {
+    //     this.cards = [];
+    //     this.shuffled = [];
+    // };
 
     //---CARD CONSTRUCTOR
 
-    function Card(value, suit) {
-        this.value = value;
-        this.suit = suit;
-    };
+    // function Card(value, suit) {
+    //     this.value = value;
+    //     this.suit = suit;
+    // };
 
     // --------DECK PROTOTYPE FUNCTIONS
 
-    Deck.prototype.makeCards = function() {
-        for (let i = 2; i < 15; i++) {
-            this.cards.push(new Card(i, 'heart'));
-            this.cards.push(new Card(i, 'spade'));
-            this.cards.push(new Card(i, 'diamond'));
-            this.cards.push(new Card(i, 'club'));
-        };
-    }
+    // Deck.prototype.makeCards = function() {
+    //     for (let i = 2; i < 15; i++) {
+    //         this.cards.push(new Card(i, 'heart'));
+    //         this.cards.push(new Card(i, 'spade'));
+    //         this.cards.push(new Card(i, 'diamond'));
+    //         this.cards.push(new Card(i, 'club'));
+    //     };
+    // }
 
      Deck.prototype.shuffle = function() {
         while (this.cards.length > 0) {
